@@ -1,0 +1,79 @@
+Флоринский Владимир (1, 2) 
+Задание 1
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class message {
+private:
+    string text;
+public:
+//конструктор
+    message(const string& mesText) :text(mesText) {
+    cout << "message create: " << text << "\n";
+    }
+//деструктор
+    ~message() {
+    cout << "message delete: " << text << "\n";
+    }
+//метод класса
+    void print() {
+    cout << text << "\n";
+    }
+};
+
+int main() {
+    message firstMes("Hello");
+    message* secondMes = new message("World");
+    firstMes.print();
+    secondMes->print();
+    delete secondMes;
+
+    return 0;
+}
+
+Задание 2
+#include <iostream>
+using namespace std;
+
+class counter {
+private:
+    int id;
+    static int totalCounters;
+
+public:
+    // конструктор
+    counter() {
+    totalCounters++;
+    id = totalCounters;
+    cout << "Counter #" << id << " created\n";
+    }
+
+    // деструктор
+    ~counter() {
+    cout << "Counter #" << id << " destroyed\n";
+    totalCounters--;
+    }
+
+    // гетер
+    static int getTC() {
+    return totalCounters;
+    }
+};
+
+// инициализация статического параметра
+int counter::totalCounters = 0;
+
+int main() {
+    cout << "How many counters create?\n";
+    int x;
+    cin >> x;
+    counter* counters = new counter[x];
+    cout<<counter::getTC()<<"n";
+
+    delete[] counters;
+    cout << counter::getTC << "\n";
+
+    return 0;
+}
