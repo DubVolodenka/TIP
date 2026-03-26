@@ -1,0 +1,101 @@
+задание 1
+#include <iostream>
+using namespace std;
+int main() {
+    int i = 1;
+    float f = 1.1f;
+    double d = 1.11111;
+    char c = 'd';
+    bool b = 0;
+
+    double i_d = static_cast<double>(i);
+    cout << i << " -> " << i_d << endl;
+
+    int d_i = static_cast<int>(d);
+    cout << d << " -> " << d_i << endl;
+
+    float d_f = static_cast<float>(d);
+    cout << d << " -> " << d_f << endl;
+
+    double f_d = static_cast<double>(f);
+    cout << f << " -> " << f_d << endl;
+
+    int c_i = static_cast<int>(c);
+    cout << c << " -> " << c_i << endl;
+
+    char i_c = static_cast<char>(i);
+    cout << i << " -> " << i_c << endl;
+
+    int b_i = static_cast<int>(b);
+    cout << b << " -> " << b_i << endl;
+
+    bool onezero = static_cast<bool>(0);
+    cout << b << " -> " << b_i << endl;
+
+    bool nonezero = static_cast<bool>(31);
+    cout << 31 << " -> " << nonezero << endl;
+
+    return 0;
+}
+
+задание 2
+#include<iostream>
+#include<vector>
+using namespace std;
+class shape {
+public:
+    virtual ~shape() = default;
+    virtual double area() const = 0;
+    virtual void print() const = 0;
+};
+class circle : public shape {
+private:
+    double rad;
+public:
+    circle(double r) : rad(r) {}
+    double area() const override {
+    return 3.14 * rad * rad;
+    }
+    void print() const override {
+    cout << "radius = " << rad << endl
+    << "area = " << area() << endl;
+    }
+    double getrad() const { return rad; }
+};
+class rectangle : public shape {
+private:
+    double w, h;
+public:
+    rectangle(double a, double b) : w(a), h(b) {}
+    double area() const override {
+    return w * h;
+    }
+    void print() const override {
+    cout << "width = " << w << endl
+    << "height = " << h << endl
+    << "area = " << area() << endl;
+    }
+    double getw() const { return w; }
+    double geth() const { return h; }
+};
+int main() {
+    vector<shape*> shapes;
+    shapes.push_back(new circle(3.0));
+    shapes.push_back(new rectangle(4.0, 5.0));
+
+    //статическое приведение
+    circle* c = static_cast<circle*>(shapes[0]);
+    cout << c->getrad() << endl;
+
+    rectangle* r = static_cast<rectangle*>(shapes[1]);
+    cout << r->getw() << endl;
+
+    //ошибка
+    rectangle* er = static_cast<rectangle*>(shapes[0]);
+    cout << er->getw() << endl;
+
+    for (shape* x : shapes) {
+        delete x;
+    }
+    return 0;
+}
