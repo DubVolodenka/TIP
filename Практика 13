@@ -1,0 +1,281 @@
+1) 
+#include <iostream>
+#include <array>
+
+using namespace std;
+
+void printAr(const array<int, 10>& ar) {
+    for (size_t i = 0; i < ar.size(); ++i) {
+        cout << ar[i];
+        if (i < ar.size() - 1) {
+            cout << " ";
+        }
+    }
+    cout << endl;
+}
+
+int sumAr(const array<int, 10>& ar) {
+    int sum = 0;
+    for (int num : ar) {
+        sum += num;
+    }
+    return sum;
+}
+
+double midl(const array<int, 10>& ar) {
+    if (ar.size() == 0) return 0.0;
+    return static_cast<double>(sumAr(ar)) / ar.size();
+}
+
+int findMax(const array<int, 10>& ar) {
+    int max = ar[0];
+    for (int num : ar) {
+        if (num > max) {
+            max = num;
+        }
+    }
+    return max;
+}
+
+int findMin(const array<int, 10>& ar) {
+    int min = ar[0];
+    for (int num : ar) {
+        if (num < min) {
+            min = num;
+        }
+    }
+    return min;
+}
+
+int main() {
+    array<int, 10> ar;
+    for (int i = 0; i < 10; ++i) {
+        ar[i] = i;
+    }
+
+
+    printAr(ar);
+
+    cout << sumAr(ar) << endl;
+    cout << midl(ar) << endl;
+    cout << findMax(ar) << endl;
+    cout << findMin(ar) << endl;
+
+    ar.fill(42);
+    
+    printAr(ar);
+
+    array<int, 10> precopy;
+    for (int i = 0; i < 10; ++i) {
+        precopy[i] = i * 10;
+    }
+
+    array<int, 10> copyAr = precopy;
+    copyAr[0] = 52;
+
+  
+    printAr(precopy);
+   
+    printAr(copyAr);
+
+    return 0;
+}
+
+2) 
+#include <iostream>
+#include <array>
+#include <numeric>
+#include <algorithm>
+
+using namespace std;
+
+double avg(const array<int, 15>& g) {
+    double sum = accumulate(g.begin(), g.end(), 0);
+    return sum / g.size();
+}
+
+int count5(const array<int, 15>& g) {
+    return count(g.begin(), g.end(), 5);
+}
+
+int countFail(const array<int, 15>& g) {
+    return count_if(g.begin(), g.end(), [](int x) { return x <= 2; });
+}
+
+void stat(const array<int, 15>& g) {
+
+    for (int i = 1; i <= 5; ++i) {
+        int n = count(g.begin(), g.end(), i);
+        cout << "Grade " << i << ": ";
+        for (int j = 0; j < n; ++j) {
+            cout << "*";
+        }
+        cout << " (" << n << ")" << endl;
+    }
+}
+
+int main() {
+    const int N = 15;
+    array<int, N> g;
+
+
+    for (int i = 0; i < N; ++i) {
+        int x;
+        do {
+            cout << "Student " << i + 1 << ": (1-5): ";
+            cin >> x;
+
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(10000, '\n');
+                x = 0;
+            }
+
+            if (x < 1 || x > 5) {
+                cout << "Error! input 1-5" << endl;
+            }
+        } while (x < 1 || x > 5);
+
+        g[i] = x;
+    }
+
+    cout << "Avg: " << avg(g) << endl;
+    cout << "5: " << count5(g) << endl;
+    cout << "<=2: " << countFail(g) << endl;
+    cout << "Statistic: " << (N - countFail(g)) * 100.0 / N << endl;
+
+    stat(g);
+
+    return 0;
+}
+
+3) 
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+struct Task {
+    string desc;
+    int prio;
+    bool done;
+};
+
+bool cmp(const Task& a, const Task& b) {
+    return a.prio < b.prio;
+}
+
+int main() {
+    vector<Task> t;
+    int c;
+
+    while (true) {
+        cout << "1 - Add task" << endl;
+        cout << "2 - Mark completed" << endl;
+        cout << "3 - Delete task" << endl;
+        cout << "4 - All tasks" << endl;
+        cout << "5 - Uncompleted tasks" << endl;
+        cout << "6 - By priority" << endl;
+        cout << "0 - Exit" << endl;
+        cout << "Choice: ";
+        cin >> c;
+        cin.ignore();
+
+        switch (c) {
+        case 0:
+            return 0;
+
+        case 1: {
+            Task x;
+            cout << "Description: ";
+            getline(cin, x.desc);
+            cout << "Priority (1-high, 2-medium, 3-low): ";
+            cin >> x.prio;
+            x.done = false;
+            t.push_back(x);
+            cout << "Added" << endl;
+            break;
+        }
+
+        case 2: {
+            int n;
+            cout << "Task number: ";
+            cin >> n;
+            if (n >= 1 && n <= t.size()) {
+                t[n - 1].done = true;
+                cout << "Marked" << endl;
+            }
+            else {
+                cout << "Wrong number" << endl;
+            }
+            break;
+        }
+
+        case 3: {
+            int n;
+            cout << "Task number: ";
+            cin >> n;
+            if (n >= 1 && n <= t.size()) {
+                t.erase(t.begin() + (n - 1));
+                cout << "Deleted" << endl;
+            }
+            else {
+                cout << "Wrong number" << endl;
+            }
+            break;
+        }
+
+        case 4: {
+            if (t.empty()) {
+                cout << "List is empty" << endl;
+            }
+            else {
+                for (int i = 0; i < t.size(); i++) {
+                    cout << i + 1 << ". [" << (t[i].done ? "V" : " ") << "] ";
+                    cout << t[i].desc << " (priority: " << t[i].prio << ")" << endl;
+                }
+            }
+            break;
+        }
+
+        case 5: {
+            bool f = false;
+            for (int i = 0; i < t.size(); i++) {
+                if (!t[i].done) {
+                    cout << i + 1 << ". " << t[i].desc;
+                    cout << " (priority: " << t[i].prio << ")" << endl;
+                    f = true;
+                }
+            }
+            if (!f) {
+                cout << "All tasks completed" << endl;
+            }
+            break;
+        }
+
+        case 6: {
+            if (t.empty()) {
+                cout << "List is empty" << endl;
+            }
+            else {
+                vector<Task> s = t;
+                sort(s.begin(), s.end(), cmp);
+                for (int i = 0; i < s.size(); i++) {
+                    cout << i + 1 << ". [" << (s[i].done ? "V" : " ") << "] ";
+                    cout << s[i].desc << " (priority: " << s[i].prio << ")" << endl;
+                }
+            }
+            break;
+        }
+
+        default:
+            cout << "Wrong choice" << endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+
